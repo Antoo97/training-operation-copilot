@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Training Operation Copilot</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">TRAINING OPERATION COPILOT · v0.1</p>
+        <h1>线下培训项目驾驶舱</h1>
+        <p class="subtitle">根据活动日期自动展开准备节点，让关键事项不再只靠记忆。</p>
+      </div>
+      <span class="status-chip">MVP 开发版</span>
+    </header>
+
+    <main>
+      <section class="panel create-panel">
+        <div class="section-heading">
+          <div>
+            <p class="step">STEP 01</p>
+            <h2>创建培训项目</h2>
+          </div>
+          <p>选择预置模板并设置培训日期，系统会生成全部项目任务。</p>
+        </div>
+
+        <form id="project-form" class="project-form">
+          <label>
+            项目名称
+            <input id="name" required maxlength="200" placeholder="例如：AI 领导力线下培训">
+          </label>
+          <label>
+            项目模板
+            <select id="template" required></select>
+          </label>
+          <label>
+            项目启动日期
+            <input id="start-date" type="date" required>
+          </label>
+          <label>
+            培训举办日期
+            <input id="event-date" type="date" required>
+          </label>
+          <button type="submit">创建并生成项目节点</button>
+        </form>
+        <p id="form-message" class="message" aria-live="polite"></p>
+      </section>
+
+      <section class="workspace">
+        <aside class="panel projects-panel">
+          <div class="section-heading compact">
+            <div>
+              <p class="step">PROJECTS</p>
+              <h2>项目</h2>
+            </div>
+          </div>
+          <div id="project-list" class="project-list"></div>
+        </aside>
+
+        <section class="panel timeline-panel">
+          <div id="empty-state" class="empty-state">
+            <span>01</span>
+            <h2>先创建一个培训项目</h2>
+            <p>创建后可以在这里检查节点日期、任务内容和 required 标记。</p>
+          </div>
+          <div id="project-detail" hidden>
+            <div class="detail-header">
+              <div>
+                <p class="step">PROJECT TIMELINE</p>
+                <h2 id="detail-name"></h2>
+                <p id="detail-meta" class="muted"></p>
+                <button id="show-add-milestone" class="secondary-button">＋ 增加关键节点</button>
+              </div>
+              <div class="stat">
+                <strong id="task-count">0</strong>
+                <span>个任务</span>
+              </div>
+            </div>
+            <form id="milestone-form" class="milestone-form" hidden>
+              <label>节点名称<input name="name" maxlength="200" required placeholder="例如：业务负责人方案确认"></label>
+              <label>节点日期<input name="deadline" type="date" required></label>
+              <label class="check-label"><input name="required" type="checkbox"> 设为关键节点</label>
+              <button type="submit">保存节点</button>
+              <button id="cancel-add-milestone" type="button" class="secondary-button">取消</button>
+            </form>
+            <div id="timeline" class="timeline"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

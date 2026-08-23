@@ -1,0 +1,115 @@
+[
+  {
+    "code": "R001_BUDGET_DELAY",
+    "name": "预算延迟",
+    "risk_type": "time",
+    "target_milestone_id": "ms_offline_m03",
+    "trigger_type": "milestone_incomplete_after_offset",
+    "trigger_config": {"offset_days": -21},
+    "severity": null,
+    "severity_strategy": "dynamic",
+    "recommended_action": "确认审批节点及预计完成时间，评估是否影响后续采购和供应商安排。",
+    "source_trigger": "T-21 后预算仍未完成。"
+  },
+  {
+    "code": "R002_TRAINER_UNCONFIRMED",
+    "name": "讲师未确认",
+    "risk_type": "time",
+    "target_milestone_id": "ms_offline_m04",
+    "trigger_type": "milestone_incomplete_after_offset",
+    "trigger_config": {"offset_days": -14},
+    "severity": null,
+    "severity_strategy": "dynamic",
+    "recommended_action": "确认讲师最终档期，同时评估备选讲师资源。",
+    "source_trigger": "T-14 后讲师未确认。"
+  },
+  {
+    "code": "R003_VENUE_UNCONFIRMED",
+    "name": "场地未确认",
+    "risk_type": "time",
+    "target_milestone_id": "ms_offline_m05",
+    "trigger_type": "milestone_incomplete_after_offset",
+    "trigger_config": {"offset_days": -14},
+    "severity": null,
+    "severity_strategy": "dynamic",
+    "recommended_action": "确认场地锁定情况，并准备替代方案。",
+    "source_trigger": "T-14 后场地未确认。"
+  },
+  {
+    "code": "R004_PARTICIPANT_NOTICE_DELAY",
+    "name": "学员通知延迟",
+    "risk_type": "time",
+    "target_milestone_id": "ms_offline_m06",
+    "trigger_type": "milestone_incomplete_after_offset",
+    "trigger_config": {"offset_days": -21},
+    "severity": null,
+    "severity_strategy": "dynamic",
+    "recommended_action": "尽快发送培训通知，提醒学员提前安排出差和时间。",
+    "source_trigger": "T-21 后学员通知未完成。"
+  },
+  {
+    "code": "R005_MATERIAL_DELAY",
+    "name": "物料延迟",
+    "risk_type": "time",
+    "target_milestone_id": "ms_offline_m07",
+    "trigger_type": "milestone_incomplete_after_offset",
+    "trigger_config": {"offset_days": -7},
+    "severity": null,
+    "severity_strategy": "dynamic",
+    "recommended_action": "确认制作周期、交付时间、负责人及验收标准。",
+    "source_trigger": "T-7 后物料仍未确认。"
+  },
+  {
+    "code": "R006_VENDOR_UNCLEAR",
+    "name": "供应商依赖不明确",
+    "risk_type": "dependency",
+    "target_milestone_id": "ms_offline_m09",
+    "trigger_type": "external_dependency_fields_missing",
+    "trigger_config": {
+      "external_dependency_exists": true,
+      "owner_is_missing": true,
+      "delivery_time_is_missing": true,
+      "logical_operator": "and"
+    },
+    "severity": null,
+    "severity_strategy": "dynamic",
+    "recommended_action": "获取明确供应商负责人、交付时间和交付内容。",
+    "source_trigger": "存在供应商依赖，但没有明确负责人和交付时间。"
+  },
+  {
+    "code": "R007_EVENT_READINESS",
+    "name": "现场准备未关闭",
+    "risk_type": "time",
+    "target_milestone_id": "ms_offline_m12",
+    "trigger_type": "milestone_incomplete_after_offset",
+    "trigger_config": {"offset_days": -1},
+    "severity": null,
+    "severity_strategy": "dynamic",
+    "recommended_action": "执行T-1检查，关闭关键未完成事项。",
+    "source_trigger": "T-1 存在关键执行事项未关闭。"
+  },
+  {
+    "code": "R008_CONTENT_DELAY",
+    "name": "宣传素材收集延迟",
+    "risk_type": "time",
+    "target_milestone_id": "ms_offline_m15",
+    "trigger_type": "milestone_incomplete_after_offset",
+    "trigger_config": {"offset_days": 3},
+    "severity": null,
+    "severity_strategy": "dynamic",
+    "recommended_action": "及时收集照片、视频、课程反馈等宣传素材，明确输出节点。",
+    "source_trigger": "培训结束后3天仍未完成宣传素材收集。"
+  },
+  {
+    "code": "R009_REIMBURSEMENT_DELAY",
+    "name": "报销未启动",
+    "risk_type": "time",
+    "target_milestone_id": "ms_offline_m18",
+    "trigger_type": "milestone_not_started_after_offset",
+    "trigger_config": {"offset_days": 7},
+    "severity": null,
+    "severity_strategy": "dynamic",
+    "recommended_action": "确认合同、发票、验收材料和付款流程。",
+    "source_trigger": "培训结束7天后报销未启动。"
+  }
+]

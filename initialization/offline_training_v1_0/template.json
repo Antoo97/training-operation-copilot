@@ -1,0 +1,7 @@
+{
+  "id": "tpl_offline_training_v1_0",
+  "name": "Offline Training v1.0",
+  "type": "offline_training",
+  "anchor_type": "event_date",
+  "version": "1.0"
+}
