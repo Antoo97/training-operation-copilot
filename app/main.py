@@ -120,6 +120,15 @@ def get_project(project_id: str, db: Session = Depends(get_db)) -> Project:
     return project
 
 
+@app.delete("/projects/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
+def remove_project(project_id: str, db: Session = Depends(get_db)) -> None:
+    project = db.get(Project, project_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail="project not found")
+    db.delete(project)
+    db.commit()
+
+
 @app.patch("/tasks/{task_id}/status", response_model=ProjectTaskRead)
 def patch_task_status(task_id: str, payload: TaskStatusUpdate, db: Session = Depends(get_db)) -> ProjectTask:
     task = db.get(ProjectTask, task_id)

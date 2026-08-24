@@ -42,10 +42,28 @@ async function loadProjects(selectedId) {
   state.projects = await api("/projects");
   $("#project-total").textContent = state.projects.length;
   $("#project-list").innerHTML = state.projects.length ? state.projects.map(item => `
-    <button class="project-card ${item.id === selectedId ? "active" : ""}" data-project-id="${item.id}">
-      <strong>${escapeHtml(item.name)}</strong><span>培训日 · ${formatDate(item.event_date)}</span>
-    </button>`).join("") : `<div class="empty-mini">暂无项目<br>点击右上角开始创建</div>`;
+    <div class="project-card ${item.id === selectedId ? "active" : ""}">
+      <button class="project-select" data-project-id="${item.id}"><strong>${escapeHtml(item.name)}</strong><span>培训日 · ${formatDate(item.event_date)}</span></button>
+      <button class="project-delete" data-delete-project="${item.id}" data-project-name="${escapeHtml(item.name)}" title="删除项目">×</button>
+    </div>`).join("") : `<div class="empty-mini">暂无项目<br>点击右上角开始创建</div>`;
   document.querySelectorAll("[data-project-id]").forEach(button => button.onclick = () => showProject(button.dataset.projectId));
+  document.querySelectorAll("[data-delete-project]").forEach(button => button.onclick = () => deleteProject(button.dataset.deleteProject, button.dataset.projectName));
+}
+
+async function deleteProject(id, name) {
+  if (!window.confirm(`确定永久删除项目“${name}”吗？\n\n该项目的所有节点和任务都会一并删除，无法撤销。`)) return;
+  try {
+    await api(`/projects/${id}`, { method: "DELETE" });
+    if (state.project?.id === id) state.project = null;
+    await loadProjects();
+    if (state.projects.length) await showProject(state.projects[0].id);
+    else {
+      $("#project-detail").hidden = true;
+      updateMetrics(null); renderCalendar();
+      $("#day-items").innerHTML = `<div class="empty-mini">暂无项目数据</div>`;
+    }
+    notify("项目已删除", true);
+  } catch (error) { notify(`删除失败：${error.message}`); }
 }
 
 function updateMetrics(project) {
