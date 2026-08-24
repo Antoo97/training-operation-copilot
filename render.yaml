@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: training-operation-copilot
+    runtime: python
+    plan: free
+    buildCommand: pip install -e .
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.13
+      - key: TRAINING_COPILOT_DATABASE_URL
+        sync: false
+      - key: TRAINING_COPILOT_USERNAME
+        value: admin
+      - key: TRAINING_COPILOT_PASSWORD
+        sync: false

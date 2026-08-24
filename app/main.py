@@ -1,10 +1,13 @@
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
+import base64
+import os
+import secrets
 from uuid import uuid4
 from pathlib import Path
 
-from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.responses import FileResponse
+from fastapi import Depends, FastAPI, HTTPException, Request, status
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
@@ -41,6 +44,34 @@ async def lifespan(_: FastAPI):
 app = FastAPI(title="Training Operation Copilot", version="0.1.0", lifespan=lifespan)
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+
+@app.middleware("http")
+async def optional_password_protection(request: Request, call_next):
+    """Protect cloud deployments while keeping local development password-free."""
+    password = os.getenv("TRAINING_COPILOT_PASSWORD")
+    if not password or request.url.path == "/health":
+        return await call_next(request)
+
+    expected_user = os.getenv("TRAINING_COPILOT_USERNAME", "admin")
+    authorization = request.headers.get("Authorization", "")
+    authenticated = False
+    if authorization.startswith("Basic "):
+        try:
+            decoded = base64.b64decode(authorization[6:]).decode("utf-8")
+            username, supplied_password = decoded.split(":", 1)
+            authenticated = secrets.compare_digest(username, expected_user) and secrets.compare_digest(
+                supplied_password, password
+            )
+        except (ValueError, UnicodeDecodeError):
+            authenticated = False
+    if not authenticated:
+        return Response(
+            status_code=401,
+            headers={"WWW-Authenticate": 'Basic realm="Training Copilot"'},
+            content="需要输入工作台账号和密码",
+        )
+    return await call_next(request)
 
 
 @app.get("/", include_in_schema=False)
