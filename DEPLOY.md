@@ -17,4 +17,12 @@
    - `TRAINING_COPILOT_PASSWORD`：同事访问工作台时使用的密码。
 4. 部署完成后，用户名默认为 `admin`。
 
+启动命令会先执行 Alembic migration。已有 v0.1 数据库会先标记为 v0.1 baseline，再按顺序升级；全新数据库会创建当前 schema 并标记为最新版本。正式部署前仍应先备份 Supabase 数据库。
+
 本地运行时如果不设置上述变量，仍使用 `training_copilot.db`，且不要求密码。
+
+本地手动升级可运行：
+
+```bash
+.venv/bin/python -m app.migrate
+```

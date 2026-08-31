@@ -6,10 +6,11 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
-from app.models import Milestone, ProjectTemplate, RiskRule, TemplateTask
+from app.models import Milestone, ProjectTemplate, ReferencePrice, RiskRule, TemplateTask
 
 
 DEFAULT_SEED_DIR = Path(__file__).resolve().parents[2] / "initialization" / "offline_training_v1_0"
+REFERENCE_PRICE_SEED_DIR = Path(__file__).resolve().parents[2] / "initialization" / "reference_prices_v1"
 
 
 def _read_json(path: Path) -> Any:
@@ -37,4 +38,11 @@ def load_offline_training_seed(db: Session, seed_dir: Path = DEFAULT_SEED_DIR) -
     for item in rules_data:
         db.merge(RiskRule(**item))
 
+    db.commit()
+
+
+def load_reference_price_seed(db: Session, seed_dir: Path = REFERENCE_PRICE_SEED_DIR) -> None:
+    for item in _read_json(seed_dir / "reference_prices.json"):
+        if db.get(ReferencePrice, item["id"]) is None:
+            db.add(ReferencePrice(**item))
     db.commit()

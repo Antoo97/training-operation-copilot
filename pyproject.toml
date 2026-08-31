@@ -4,11 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "training-operation-copilot"
-version = "0.1.0"
-description = "Training Operation Copilot v0.1 MVP"
+version = "0.2.0"
+description = "Training Operation Copilot v0.2 with v0.1 compatibility"
 requires-python = ">=3.12"
 dependencies = [
+  "alembic>=1.16,<2",
   "fastapi>=0.116,<1",
+  "openpyxl>=3.1,<4",
+  "python-multipart>=0.0.20,<1",
   "pydantic>=2.11,<3",
   "sqlalchemy>=2.0,<3",
   "psycopg[binary]>=3.2,<4",

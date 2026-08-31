@@ -1,0 +1,10 @@
+[
+  {"id":"rp_external_instructor","expense_name":"外请讲师","price_type":"unit","unit_price":null,"min_price":null,"max_price":null,"unit":"场","notes":null,"source_note":"初始化费用项","is_active":true},
+  {"id":"rp_refreshments","expense_name":"茶歇","price_type":"unit","unit_price":null,"min_price":null,"max_price":null,"unit":"人","notes":null,"source_note":"初始化费用项","is_active":true},
+  {"id":"rp_photography","expense_name":"摄影摄像","price_type":"unit","unit_price":null,"min_price":null,"max_price":null,"unit":"场","notes":null,"source_note":"初始化费用项","is_active":true},
+  {"id":"rp_training_manual","expense_name":"培训手册","price_type":"unit","unit_price":null,"min_price":null,"max_price":null,"unit":"本","notes":null,"source_note":"初始化费用项","is_active":true},
+  {"id":"rp_regular_materials","expense_name":"常规物料","price_type":"unit","unit_price":null,"min_price":null,"max_price":null,"unit":"批","notes":null,"source_note":"初始化费用项","is_active":true},
+  {"id":"rp_prizes","expense_name":"奖品","price_type":"unit","unit_price":null,"min_price":null,"max_price":null,"unit":"份","notes":null,"source_note":"初始化费用项","is_active":true},
+  {"id":"rp_custom_gifts","expense_name":"定制礼品","price_type":"unit","unit_price":null,"min_price":null,"max_price":null,"unit":"份","notes":null,"source_note":"初始化费用项","is_active":true},
+  {"id":"rp_other","expense_name":"其他费用","price_type":"unit","unit_price":null,"min_price":null,"max_price":null,"unit":"项","notes":null,"source_note":"初始化费用项","is_active":true}
+]
