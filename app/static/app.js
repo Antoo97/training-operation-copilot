@@ -120,6 +120,10 @@ async function showProgram(id) {
     document.querySelectorAll("[data-delete-class]").forEach(button => button.onclick = async () => { const item=program.classes.find(row=>row.id===button.dataset.deleteClass); if(!confirm(`删除班级“${item.name}”？`))return; await api(`/api/v2/classes/${item.id}`,{method:"DELETE"}); await showProgram(program.id); notify("班级已删除",true); });
     await Promise.all([loadPrograms(id), loadActivityLogs(id)]); await loadProjects();
     if (program.activities.length && !state.project) await showProject(program.activities[0].id);
+    if (!$("#requirements-section").hidden) await loadRequirements();
+    if (!$("#operations-section").hidden) await showOperations(program.id);
+    if (!$("#alerts-section").hidden) await showAlerts(false, program.id);
+    if (!$("#resources-section").hidden) await showResources(program.id);
   } catch (error) { notify(`项目加载失败：${error.message}`); }
 }
 
@@ -528,11 +532,16 @@ function hideOperationSections(exceptId) {
   ["operations-section", "training-map-section", "alerts-section", "resources-section"].forEach(id => { if (id !== exceptId) $(`#${id}`).hidden = true; });
 }
 
+function programSelectorOptions(selectedId) {
+  return state.programs.filter(item => item.status !== "archived").map(item => `<option value="${item.id}" ${item.id === selectedId ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("");
+}
+
 async function showOperations(programId = state.program?.id) {
   if (!programId) return notify("请先选择一个培养项目");
   hideOperationSections("operations-section");
   const [data, retrospective] = await Promise.all([api(`/api/v2/programs/${programId}/dashboard`), api(`/api/v2/programs/${programId}/retrospective`)]);
   $("#operations-section").hidden = false; $("#operations-title").textContent = `${data.name}｜运营总览`;
+  $("#operations-program").innerHTML = programSelectorOptions(programId);
   $("#export-excel").href = `/api/v2/programs/${programId}/exports/operations.xlsx`; $("#export-ics").href = `/api/v2/programs/${programId}/calendar.ics`;
   $("#operations-metrics").innerHTML = [
     ["任务进度", `${data.progress}%`, `时间进度 ${data.time_progress}%`], ["健康度", data.health.label, `${data.health.open_alert_count} 条开放预警`],
@@ -567,10 +576,11 @@ async function showTrainingMap() {
   $("#training-map-section").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
-async function showAlerts(evaluate = false) {
-  if (!state.program) return notify("请先选择一个培养项目");
+async function showAlerts(evaluate = false, programId = state.program?.id) {
+  if (!programId) return notify("请先选择一个培养项目");
   hideOperationSections("alerts-section"); $("#alerts-section").hidden = false;
-  const rows = await api(evaluate ? `/api/v2/programs/${state.program.id}/alerts/evaluate` : `/api/v2/programs/${state.program.id}/alerts`, evaluate ? {method:"POST"} : {});
+  $("#alerts-program").innerHTML = programSelectorOptions(programId);
+  const rows = await api(evaluate ? `/api/v2/programs/${programId}/alerts/evaluate` : `/api/v2/programs/${programId}/alerts`, evaluate ? {method:"POST"} : {});
   const alertGroups=[["risk","风险"],["attention","关注"]];
   $("#alerts-list").innerHTML = rows.length ? `<div class="alert-bulk"><label><input id="select-all-alerts" type="checkbox">一键全选</label><select id="bulk-alert-action"><option value="acknowledge">批量确认</option><option value="resolve">批量解决</option><option value="dismiss">批量忽略</option></select><button id="apply-alert-bulk" class="text-button">同步操作</button><span id="alert-selected-count">已选 0 项</span></div><div class="alert-groups">${alertGroups.map(([severity,label])=>{const items=rows.filter(x=>x.severity===severity);return `<section class="alert-group ${severity}"><div class="alert-group-title"><h3>${label}</h3><span>${items.length}</span></div>${items.length?`<ul>${items.map(x=>`<li><input class="alert-select" data-alert-select="${x.id}" type="checkbox" aria-label="选择${escapeHtml(x.title)}"><div><strong>• ${escapeHtml(x.title)}</strong><p>${escapeHtml(x.reason)}</p><small>建议：${escapeHtml(x.recommended_action)}</small></div><select class="alert-state" data-alert="${x.id}"><option value="">调整状态</option><option value="acknowledge">确认</option><option value="resolve">解决</option><option value="dismiss">忽略</option></select></li>`).join("")}</ul>`:'<div class="empty-mini">暂无</div>'}</section>`;}).join("")}</div>` : '<div class="empty-mini">当前没有开放预警，项目健康度正常</div>';
   document.querySelectorAll(".alert-state").forEach(select => select.onchange = async () => { if(!select.value)return; await api(`/api/v2/alerts/${select.dataset.alert}/${select.value}`,{method:"POST"}); await showAlerts(false); });
@@ -583,8 +593,10 @@ async function showAlerts(evaluate = false) {
   $("#alerts-section").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
-async function showResources() {
+async function showResources(programId = state.program?.id) {
+  if (!programId) return notify("请先选择一个培养项目");
   hideOperationSections("resources-section"); $("#resources-section").hidden = false;
+  $("#resources-program").innerHTML = programSelectorOptions(programId);
   const rows = await api("/api/v2/resources");
   const taskSelect = $('#resource-link-form [name="task_id"]'), resourceSelect = $('#resource-link-form [name="resource_id"]');
   const tasks = state.project?.tasks?.filter(x => x.status !== "cancelled") || [];
@@ -604,7 +616,7 @@ async function loadTaskResourceLinks() {
 
 function toggleCreate(show) { $("#create-section").hidden = !show; if (show) $("#name").focus(); }
 $("#quick-create").onclick = () => toggleCreate(true); $("#close-create").onclick = () => toggleCreate(false);
-document.querySelectorAll(".nav-item").forEach(button => button.onclick = () => { document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active")); button.classList.add("active"); if (button.dataset.view === "create") toggleCreate(true); if (button.dataset.view === "timeline" && !$("#project-detail").hidden) $("#project-detail").scrollIntoView({ behavior: "smooth" }); if (button.dataset.view === "requirements") openRequirements(); if (button.dataset.view === "operations") showOperations(); if (button.dataset.view === "training-map") showTrainingMap(); if (button.dataset.view === "alerts") showAlerts(); if (button.dataset.view === "resources") showResources(); });
+document.querySelectorAll(".nav-item").forEach(button => button.onclick = () => { document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active")); button.classList.add("active"); if (button.dataset.view === "create") toggleCreate(true); if (button.dataset.view === "timeline" && state.project) { $("#project-detail").hidden = false; $("#project-detail").scrollIntoView({ behavior: "smooth" }); } if (button.dataset.view === "requirements") openRequirements(); if (button.dataset.view === "operations") showOperations(); if (button.dataset.view === "training-map") showTrainingMap(); if (button.dataset.view === "alerts") showAlerts(); if (button.dataset.view === "resources") showResources(); });
 $("#prev-month").onclick = () => { state.calendarDate = new Date(state.calendarDate.getFullYear(), state.calendarDate.getMonth() - 1, 1); renderCalendar(); };
 $("#next-month").onclick = () => { state.calendarDate = new Date(state.calendarDate.getFullYear(), state.calendarDate.getMonth() + 1, 1); renderCalendar(); };
 $("#today-button").onclick = () => { state.calendarDate = new Date(); selectDate(isoDate(new Date())); };
@@ -633,7 +645,11 @@ $("#open-operations").onclick = () => showOperations(state.program.id);
 $("#edit-program").onclick=()=>{const p=state.program,form=$("#program-edit-form");["name","owner_name","start_date","end_date","business_unit","participant_count","current_phase"].forEach(name=>form.elements[name].value=p[name]??"");$("#program-edit-dialog").showModal();};
 $("#program-edit-form").onsubmit=async event=>{event.preventDefault();const form=event.currentTarget,data=new FormData(form);await api(`/api/v2/programs/${state.program.id}`,{method:"PATCH",body:JSON.stringify({name:data.get("name").trim(),owner_name:data.get("owner_name").trim()||null,start_date:data.get("start_date"),end_date:data.get("end_date"),business_unit:data.get("business_unit").trim()||null,participant_count:Number(data.get("participant_count")||0),current_phase:data.get("current_phase").trim()||null})});$("#program-edit-dialog").close();await showProgram(state.program.id);notify("培训项目已更新",true);};
 $("#close-requirements").onclick = () => { $("#requirements-section").hidden = true; };
-$("#requirements-program").onchange = async event => { state.requirementsProgramId = event.currentTarget.value; $("#requirements-activity").value = ""; await loadRequirements(); };
+$("#close-project-detail").onclick = () => { $("#project-detail").hidden = true; };
+$("#requirements-program").onchange = async event => { const programId = event.currentTarget.value; $("#requirements-activity").value = ""; if (state.program?.id !== programId) await showProgram(programId); else { state.requirementsProgramId = programId; await loadRequirements(); } };
+$("#operations-program").onchange = async event => { const programId = event.currentTarget.value; if (state.program?.id !== programId) await showProgram(programId); else await showOperations(programId); };
+$("#alerts-program").onchange = async event => { const programId = event.currentTarget.value; if (state.program?.id !== programId) await showProgram(programId); else await showAlerts(false, programId); };
+$("#resources-program").onchange = async event => { const programId = event.currentTarget.value; if (state.program?.id !== programId) await showProgram(programId); else await showResources(programId); };
 $("#apply-requirement-filters").onclick = () => loadRequirements();
 document.querySelectorAll("[data-requirement-tab]").forEach(button => button.onclick = () => { document.querySelectorAll("[data-requirement-tab]").forEach(item => item.classList.toggle("active", item === button)); document.querySelectorAll("[data-requirement-pane]").forEach(pane => pane.hidden = pane.dataset.requirementPane !== button.dataset.requirementTab); });
 document.querySelectorAll(".summary-jump").forEach(button=>button.onclick=()=>{document.querySelector(`[data-requirement-tab="${button.dataset.summaryTab}"]`).click();document.querySelector(`[data-requirement-pane="${button.dataset.summaryTab}"]`).scrollIntoView({behavior:"smooth",block:"start"});});

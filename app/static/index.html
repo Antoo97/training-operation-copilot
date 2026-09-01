@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/static/styles.css?v=visual1">
   <link rel="stylesheet" href="/static/phase2.css?v=visual1">
   <link rel="stylesheet" href="/static/visual-system.css?v=visual1">
-  <link rel="stylesheet" href="/static/notion-theme.css?v=notion1">
+  <link rel="stylesheet" href="/static/notion-theme.css?v=notion4">
 </head>
 <body>
   <div class="app-shell">
@@ -72,7 +72,7 @@
       </section>
 
       <section id="requirements-section" class="panel requirements-section" hidden>
-        <div class="panel-title"><div><span class="section-kicker">REQUIREMENT COLLABORATION</span><h2>需求协同中心</h2><p>预算、物料和宣传需求统一维护；不包含采购、付款和正式审批。</p></div><button id="close-requirements" class="icon-button" aria-label="关闭需求协同">×</button></div>
+        <div class="panel-title"><div><span class="section-kicker">REQUIREMENT COLLABORATION</span><h2>需求协同中心</h2><p>预算、物料和宣传需求统一维护；不包含采购、付款和正式审批。</p></div><button id="close-requirements" class="icon-button module-close" aria-label="关闭需求协同">×</button></div>
         <div class="requirement-filters"><label>培养项目<select id="requirements-program"></select></label><label>培养活动<select id="requirements-activity"><option value="">全部活动及项目级需求</option></select></label><label>负责人筛选<input id="requirements-owner" placeholder="输入负责人"></label><label>状态筛选<select id="requirements-status"><option value="">全部状态</option><option value="pending">未完成</option><option value="pending_submission">待申请</option><option value="in_progress">制作中</option><option value="in_review">审批中</option><option value="done">已完成</option><option value="approved">已通过</option></select></label><button id="apply-requirement-filters" class="text-button">应用筛选</button></div>
         <div class="requirement-summary"><article><span>预算汇总</span><strong id="requirement-budget-total">¥0.00</strong></article><button type="button" class="summary-jump" data-summary-tab="budget"><span>预算表</span><strong id="requirement-budget-sheets">0</strong></button><button type="button" class="summary-jump" data-summary-tab="material"><span>物料状态</span><strong id="requirement-material-open">0/0</strong></button><button type="button" class="summary-jump" data-summary-tab="publicity"><span>宣传状态</span><strong id="requirement-publicity-open">0/0</strong></button></div>
         <p class="price-disclaimer">参考价格仅用于预算前期测算，实际价格以最终报价为准。</p>
@@ -91,20 +91,22 @@
       </section>
 
       <section id="operations-section" class="panel operations-section" hidden>
-        <div class="panel-title"><div><span class="section-kicker">PROGRAM DASHBOARD</span><h2 id="operations-title">项目运营总览</h2><p>进度、专项、未来 7 天和项目动态使用同一套实时数据。</p></div><div class="detail-actions"><a id="export-excel" class="outline-button" href="#">导出项目运营大表</a><a id="export-ics" class="outline-button" href="#">导出整个项目日历</a><button id="close-operations" class="icon-button">×</button></div></div>
+        <div class="panel-title"><div><span class="section-kicker">PROGRAM DASHBOARD</span><h2 id="operations-title">项目运营总览</h2><p>进度、专项、未来 7 天和项目动态使用同一套实时数据。</p></div><div class="detail-actions"><a id="export-excel" class="outline-button export-button" href="#">导出项目运营大表</a><a id="export-ics" class="outline-button export-button" href="#">导出整个项目日历</a><button id="close-operations" class="icon-button module-close" aria-label="关闭运营总览">×</button></div></div>
+        <div class="module-program-switcher"><label>当前培养项目<select id="operations-program"></select></label><small>默认跟随项目列表中已选项目，也可以在此切换。</small></div>
         <div id="operations-metrics" class="operations-metrics"></div><div class="operations-grid"><div><h3>活动与届别</h3><div id="operations-activities" class="requirement-list"></div></div><div><h3>未来 7 天重点</h3><div id="operations-focus" class="requirement-list"></div></div></div><div><h3>项目复盘</h3><div id="retrospective-view" class="requirement-list"></div></div>
       </section>
 
       <section id="training-map-section" class="panel operations-section" hidden>
-        <div class="panel-title"><div><span class="section-kicker">ANNUAL TRAINING CALENDAR</span><h2>年度培训日历</h2><p>默认查看全年；选择月份后以月历查看具体活动日期。</p></div><div class="detail-actions"><a class="outline-button" href="/api/v2/calendar/all.ics">批量导出全部项目日历</a><button id="close-training-map" class="icon-button">×</button></div></div><div class="map-filters"><label>年度<input id="map-year" type="number" min="2000" max="2100"></label><label>月份<select id="map-month"><option value="">全年</option><option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option><option value="5">5月</option><option value="6">6月</option><option value="7">7月</option><option value="8">8月</option><option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option></select></label><button id="refresh-map" class="text-button">刷新</button></div><div id="training-map" class="training-map"></div>
+        <div class="panel-title"><div><span class="section-kicker">ANNUAL TRAINING CALENDAR</span><h2>年度培训日历</h2><p>默认查看全年；选择月份后以月历查看具体活动日期。</p></div><div class="detail-actions"><a class="outline-button export-button" href="/api/v2/calendar/all.ics">批量导出全部项目日历</a><button id="close-training-map" class="icon-button module-close" aria-label="关闭年度培训日历">×</button></div></div><div class="map-filters"><label>年度<input id="map-year" type="number" min="2000" max="2100"></label><label>月份<select id="map-month"><option value="">全年</option><option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option><option value="5">5月</option><option value="6">6月</option><option value="7">7月</option><option value="8">8月</option><option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option></select></label><button id="refresh-map" class="text-button">刷新</button></div><div id="training-map" class="training-map"></div>
       </section>
 
       <section id="alerts-section" class="panel operations-section" hidden>
-        <div class="panel-title"><div><span class="section-kicker">RISK ALERTS</span><h2>风险预警中心</h2></div><div><button id="evaluate-alerts" class="primary-button">重新评估</button><button id="close-alerts" class="icon-button">×</button></div></div><div id="alerts-list" class="requirement-list"></div>
+        <div class="panel-title"><div><span class="section-kicker">RISK ALERTS</span><h2>风险预警中心</h2></div><div><button id="evaluate-alerts" class="primary-button">重新评估</button><button id="close-alerts" class="icon-button module-close" aria-label="关闭风险预警中心">×</button></div></div>
+        <div class="module-program-switcher"><label>当前培养项目<select id="alerts-program"></select></label><small>预警默认跟随项目列表中已选项目。</small></div><div id="alerts-list" class="requirement-list"></div>
       </section>
 
       <section id="resources-section" class="panel operations-section" hidden>
-        <div class="panel-title"><div><span class="section-kicker">SOP & RESOURCES</span><h2>SOP 与资料</h2><p>上传本地文件或保存外部链接，并关联到具体节点任务。</p></div><button id="close-resources" class="icon-button">×</button></div><form id="resource-combined-form" class="compact-form resource-form"><h3>上传文件或链接</h3><label>类型<select name="source_type"><option value="file">本地文件</option><option value="link">链接</option></select></label><label>资料名称<input name="title" placeholder="文件可留空使用原文件名"></label><label data-resource-file>选择文件<input name="file" type="file"></label><label data-resource-link hidden>链接地址<input name="url" type="url" placeholder="https://"></label><label>负责人<input name="owner_name"></label><label class="full">说明<textarea name="description"></textarea></label><button class="primary-button">上传</button><small class="full upload-note">本地文件最大 10MB；链接只保存地址，不复制外部内容。</small></form><form id="resource-link-form" class="compact-form resource-form"><h3>关联到当前活动任务</h3><label>任务<select name="task_id" required></select></label><label>资料<select name="resource_id" required></select></label><label>关联方式<select name="relation_type"><option value="reference">参考资料</option><option value="deliverable">交付物</option></select></label><button class="text-button">建立关联</button></form><div id="task-resource-links" class="requirement-list"></div><div id="resources-list" class="requirement-list"></div>
+        <div class="panel-title"><div><span class="section-kicker">SOP & RESOURCES</span><h2>SOP 与资料</h2><p>上传本地文件或保存外部链接，并关联到具体节点任务。</p></div><button id="close-resources" class="icon-button module-close" aria-label="关闭SOP与资料">×</button></div><div class="module-program-switcher"><label>当前培养项目<select id="resources-program"></select></label><small>资料库全局共享，任务关联优先呈现当前项目。</small></div><form id="resource-combined-form" class="compact-form resource-form"><h3>上传文件或链接</h3><label>类型<select name="source_type"><option value="file">本地文件</option><option value="link">链接</option></select></label><label>资料名称<input name="title" placeholder="文件可留空使用原文件名"></label><label data-resource-file>选择文件<input name="file" type="file"></label><label data-resource-link hidden>链接地址<input name="url" type="url" placeholder="https://"></label><label>负责人<input name="owner_name"></label><label class="full">说明<textarea name="description"></textarea></label><button class="primary-button">上传</button><small class="full upload-note">本地文件最大 10MB；链接只保存地址，不复制外部内容。</small></form><form id="resource-link-form" class="compact-form resource-form"><h3>关联到当前活动任务</h3><label>任务<select name="task_id" required></select></label><label>资料<select name="resource_id" required></select></label><label>关联方式<select name="relation_type"><option value="reference">参考资料</option><option value="deliverable">交付物</option></select></label><button class="text-button">建立关联</button></form><div id="task-resource-links" class="requirement-list"></div><div id="resources-list" class="requirement-list"></div>
       </section>
 
       <section class="metrics-grid">
@@ -136,7 +138,7 @@
       <section id="project-detail" class="panel detail-panel" hidden>
         <div class="detail-header">
           <div><span class="section-kicker">PROJECT TIMELINE</span><h2 id="detail-name"></h2><p id="detail-meta"></p></div>
-          <button id="show-add-milestone" class="outline-button">＋ 增加关键节点</button>
+          <div class="detail-actions"><button id="show-add-milestone" class="outline-button">＋ 增加关键节点</button><button id="close-project-detail" class="icon-button module-close" aria-label="关闭节点任务">×</button></div>
         </div>
         <form id="milestone-form" class="milestone-form" hidden>
           <label>节点名称<input name="name" maxlength="200" required></label><label>节点日期<input name="deadline" type="date" required></label>
@@ -151,6 +153,6 @@
       <dialog id="subtask-dialog" class="workspace-dialog"><div class="dialog-header"><div><span class="section-kicker">BRANCH TASKS</span><h2 id="subtask-dialog-title">新增分支任务</h2></div><button type="button" class="icon-button close-dialog" aria-label="关闭">×</button></div><div id="subtask-dialog-list" class="subtask-dialog-list"></div><form id="subtask-dialog-form" class="dialog-form compact-form"><input type="hidden" name="task_id"><label class="full">分支任务名称<input name="title" maxlength="300" required></label><label>开始日期<input name="start_date" type="date" required></label><label>截止日期<input name="deadline" type="date" required></label><label>负责人<input name="owner" maxlength="500"></label><label>进度<input name="progress_percent" type="number" min="0" max="100" value="0"></label><label class="full">备注<textarea name="notes"></textarea></label><div class="dialog-actions full"><button class="primary-button">添加分支任务</button><button type="button" class="text-button close-dialog">取消</button></div></form></dialog>
     </main>
   </div>
-  <script src="/static/app.js?v=visual1"></script>
+  <script src="/static/app.js?v=visual3"></script>
 </body>
 </html>
