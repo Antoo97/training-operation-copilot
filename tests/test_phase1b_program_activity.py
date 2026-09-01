@@ -4,9 +4,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from app.database import Base
-from app.main import post_activity, post_cohort, post_training_class, remove_project
+from app.main import patch_activity, patch_training_class, post_activity, post_cohort, post_training_class, remove_project, remove_training_class
 from app.models import Program, Project, TrainingClass
-from app.schemas import ActivityCreate, CohortCreate, ProgramCreate, ProjectCreate, TrainingClassCreate
+from app.schemas import ActivityCreate, ActivityUpdate, CohortCreate, ProgramCreate, ProjectCreate, TrainingClassCreate, TrainingClassUpdate
 from app.services.projects import create_program, create_project
 from app.services.seed import load_offline_training_seed
 
@@ -101,3 +101,47 @@ def test_v1_create_project_still_creates_compatible_program() -> None:
         remove_project(project.id, db)
         assert db.query(Project).count() == 0
         assert db.query(Program).count() == 0
+
+
+def test_existing_activity_and_training_class_can_be_maintained() -> None:
+    engine = create_engine("sqlite+pysqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    with Session(engine) as db:
+        load_offline_training_seed(db)
+        program = create_program(
+            db,
+            ProgramCreate(
+                name="101培养项目",
+                program_type="annual_continuous",
+                start_date=date(2026, 1, 1),
+                end_date=date(2026, 12, 31),
+            ),
+        )
+        activity = post_activity(
+            program.id,
+            ActivityCreate(
+                name="101线下培训",
+                activity_type="offline_training",
+                start_date=date(2026, 8, 20),
+                end_date=date(2026, 8, 21),
+                event_date=date(2026, 8, 20),
+                template_id="tpl_offline_training_v1_0",
+            ),
+            db,
+        )
+        updated_activity = patch_activity(
+            activity.id,
+            ActivityUpdate(name="101线下培训（更新）", start_date=date(2026, 8, 22), end_date=date(2026, 8, 23), owner_name="张三、李四"),
+            db,
+        )
+        assert updated_activity.name == "101线下培训（更新）"
+        assert updated_activity.event_date == date(2026, 8, 22)
+        assert len(updated_activity.milestones) == 20
+        assert len(updated_activity.tasks) == 64
+
+        training_class = post_training_class(program.id, TrainingClassCreate(name="101班", participant_count=30), db)
+        updated_class = patch_training_class(training_class.id, TrainingClassUpdate(name="101一班", participant_count=28), db)
+        assert updated_class.name == "101一班"
+        assert updated_class.participant_count == 28
+        remove_training_class(training_class.id, db)
+        assert db.get(TrainingClass, training_class.id) is None

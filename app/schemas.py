@@ -248,6 +248,17 @@ class ActivityCreate(BaseModel):
     participant_count: int | None = Field(default=None, ge=0)
 
 
+class ActivityUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=200)
+    start_date: date | None = None
+    end_date: date | None = None
+    cohort_id: str | None = None
+    owner_name: str | None = Field(default=None, max_length=500)
+    location: str | None = Field(default=None, max_length=300)
+    business_unit: str | None = Field(default=None, max_length=200)
+    participant_count: int | None = Field(default=None, ge=0)
+
+
 class ProgramRead(ProgramSummary):
     description: str | None
     cohorts: list[CohortRead]

@@ -28,6 +28,7 @@ from app.schemas import (
     ProjectTaskCreate,
     ProjectTaskRead,
     ActivityCreate,
+    ActivityUpdate,
     CohortCreate,
     CohortRead,
     CohortUpdate,
@@ -518,6 +519,31 @@ def post_activity(program_id: str, payload: ActivityCreate, db: Session = Depend
         raise HTTPException(status_code=404, detail="template not found") from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.patch("/api/v2/activities/{activity_id}", response_model=ProjectRead)
+def patch_activity(activity_id: str, payload: ActivityUpdate, db: Session = Depends(get_db)) -> Project:
+    activity = db.get(Project, activity_id)
+    if activity is None or activity.program_id is None:
+        raise HTTPException(status_code=404, detail="培养活动不存在")
+    values = payload.model_dump(exclude_unset=True)
+    start_date = values.get("start_date", activity.start_date)
+    end_date = values.get("end_date", activity.end_date or activity.start_date)
+    if end_date < start_date:
+        raise HTTPException(status_code=422, detail="培养活动结束日期不能早于开始日期")
+    if "cohort_id" in values and values["cohort_id"] is not None:
+        cohort = db.get(Cohort, values["cohort_id"])
+        if cohort is None or cohort.program_id != activity.program_id:
+            raise HTTPException(status_code=422, detail="届别不属于当前培养项目")
+    for key, value in values.items():
+        if isinstance(value, str):
+            value = value.strip() or None
+        setattr(activity, key, value)
+    if (activity.activity_type or activity.type) == "offline_training":
+        activity.event_date = activity.start_date
+    db.commit()
+    db.refresh(activity)
+    return activity
 
 
 @app.get("/api/v2/activities/{activity_id}", response_model=ProjectRead)
