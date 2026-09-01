@@ -15,13 +15,13 @@
       <div class="brand"><span class="brand-mark">T</span><div><strong>培训运营</strong><small>项目驾驶舱</small></div></div>
       <nav>
         <button class="nav-item" data-view="training-map"><span>◫</span>年度培训日历</button>
-        <button class="nav-item active" data-view="dashboard"><span>▤</span>项目列表</button>
         <button class="nav-item" data-view="create"><span>＋</span>创建培养项目</button>
-          <button class="nav-item" data-view="timeline"><span>◷</span>节点任务</button>
-          <button class="nav-item" data-view="requirements"><span>⇄</span>需求协同</button>
-          <button class="nav-item" data-view="operations"><span>◉</span>运营总览</button>
-          <button class="nav-item" data-view="alerts"><span>!</span>风险预警</button>
-          <button class="nav-item" data-view="resources"><span>↗</span>SOP与资料</button>
+        <button class="nav-item active" data-view="dashboard"><span>▤</span>项目列表</button>
+        <button class="nav-item" data-view="operations"><span>◉</span>运营总览</button>
+        <button class="nav-item" data-view="alerts"><span>!</span>风险预警</button>
+        <button class="nav-item" data-view="timeline"><span>◷</span>节点任务</button>
+        <button class="nav-item" data-view="requirements"><span>⇄</span>需求协同</button>
+        <button class="nav-item" data-view="resources"><span>↗</span>SOP与资料</button>
       </nav>
       <div class="sidebar-foot"><span class="online-dot"></span>Training Copilot</div>
     </aside>
@@ -123,10 +123,10 @@
         </section>
 
         <section class="panel calendar-panel">
-          <div class="calendar-head"><div><span class="section-kicker">MILESTONE CALENDAR</span><h2 id="calendar-title">节点日历</h2></div><div class="calendar-actions"><button id="prev-month" class="icon-button">‹</button><button id="today-button" class="text-button">今天</button><button id="next-month" class="icon-button">›</button></div></div>
+          <div class="calendar-head"><div><span class="section-kicker">PROJECT CALENDAR</span><h2 id="calendar-title">节点日历</h2></div><div class="calendar-actions"><button id="prev-month" class="icon-button">‹</button><button id="today-button" class="text-button">今天</button><button id="next-month" class="icon-button">›</button></div></div>
           <div class="weekdays"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
           <div id="calendar-grid" class="calendar-grid"></div>
-          <div class="calendar-legend"><span><i class="legend-dot milestone-dot"></i>节点</span><span><i class="legend-dot task-dot"></i>任务</span><span><i class="legend-dot done-dot"></i>已完成</span></div>
+          <div class="calendar-legend"><span title="项目节点"><i class="legend-dot milestone-dot"></i>M</span><span><i class="legend-dot task-dot"></i>任务</span><span><i class="legend-dot done-dot"></i>已完成</span></div>
         </section>
 
         <aside class="panel day-panel">
@@ -153,6 +153,6 @@
       <dialog id="subtask-dialog" class="workspace-dialog"><div class="dialog-header"><div><span class="section-kicker">BRANCH TASKS</span><h2 id="subtask-dialog-title">新增分支任务</h2></div><button type="button" class="icon-button close-dialog" aria-label="关闭">×</button></div><div id="subtask-dialog-list" class="subtask-dialog-list"></div><form id="subtask-dialog-form" class="dialog-form compact-form"><input type="hidden" name="task_id"><label class="full">分支任务名称<input name="title" maxlength="300" required></label><label>开始日期<input name="start_date" type="date" required></label><label>截止日期<input name="deadline" type="date" required></label><label>负责人<input name="owner" maxlength="500"></label><label>进度<input name="progress_percent" type="number" min="0" max="100" value="0"></label><label class="full">备注<textarea name="notes"></textarea></label><div class="dialog-actions full"><button class="primary-button">添加分支任务</button><button type="button" class="text-button close-dialog">取消</button></div></form></dialog>
     </main>
   </div>
-  <script src="/static/app.js?v=visual3"></script>
+  <script src="/static/app.js?v=visual6"></script>
 </body>
 </html>

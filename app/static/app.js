@@ -290,9 +290,9 @@ function updateMetrics(project) {
 function itemsForDate(date) {
   if (!state.project) return [];
   const milestones = state.project.milestones.filter(m => m.status === "active" && m.deadline === date)
-    .map(m => ({ type: "节点", title: m.name, done: false, meta: m.required ? "关键节点" : "普通节点" }));
+    .map(m => ({ kind: "milestone", label: m.code || "M", title: m.name, done: false, meta: m.required ? "关键" : "普通" }));
   const tasks = state.project.tasks.filter(t => t.status !== "cancelled" && t.deadline === date)
-    .map(t => ({ type: "任务", title: t.title, done: t.status === "done", meta: t.owner ? `负责人：${t.owner}` : "未分配负责人" }));
+    .map(t => ({ kind: "task", label: "任务", title: t.title, done: t.status === "done", meta: t.owner ? `负责人：${t.owner}` : "未分配负责人" }));
   return [...milestones, ...tasks];
 }
 
@@ -301,7 +301,7 @@ function selectDate(date) {
   const items = itemsForDate(date);
   $("#selected-date-title").textContent = fullDateFmt.format(new Date(`${date}T00:00:00`));
   $("#day-items").innerHTML = items.length ? items.map(item => `
-    <article class="day-item ${item.done ? "done" : ""}"><small>${item.type}${item.done ? " · 已完成" : ""}</small><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.meta)}</span></article>`).join("")
+    <article class="day-item ${item.done ? "done" : ""}"><small>${escapeHtml(item.label)}${item.kind === "milestone" ? ` · ${escapeHtml(item.meta)}` : ""}${item.done ? " · 已完成" : ""}</small><strong>${escapeHtml(item.title)}</strong>${item.kind === "task" ? `<span>${escapeHtml(item.meta)}</span>` : ""}</article>`).join("")
     : `<div class="empty-mini">当天没有安排<br>可以在下方新增节点或任务</div>`;
   renderCalendar();
 }
@@ -318,9 +318,9 @@ function renderCalendar() {
   for (let i = 0; i < 42; i++) {
     const date = new Date(gridStart); date.setDate(gridStart.getDate() + i);
     const key = isoDate(date), items = itemsForDate(key);
-    const hasMilestone = items.some(item => item.type === "节点");
-    const hasOpenTask = items.some(item => item.type === "任务" && !item.done);
-    const hasDone = items.some(item => item.type === "任务" && item.done);
+    const hasMilestone = items.some(item => item.kind === "milestone");
+    const hasOpenTask = items.some(item => item.kind === "task" && !item.done);
+    const hasDone = items.some(item => item.kind === "task" && item.done);
     cells.push(`<button class="calendar-day ${date.getMonth() !== month ? "outside" : ""} ${key === today ? "today" : ""} ${key === state.selectedDate ? "selected" : ""}" data-date="${key}">
       <span class="day-number">${date.getDate()}</span><span class="day-markers">${hasMilestone ? '<i class="marker milestone"></i>' : ""}${hasOpenTask ? '<i class="marker task"></i>' : ""}${hasDone ? '<i class="marker done"></i>' : ""}</span>
     </button>`);
@@ -532,6 +532,24 @@ function hideOperationSections(exceptId) {
   ["operations-section", "training-map-section", "alerts-section", "resources-section"].forEach(id => { if (id !== exceptId) $(`#${id}`).hidden = true; });
 }
 
+function arrangeWorkspaceSections() {
+  const main = $(".main-content");
+  const firstDialog = main.querySelector("dialog");
+  const orderedSections = [
+    $("#training-map-section"),
+    $("#create-section"),
+    $(".program-layout"),
+    $(".metrics-grid"),
+    $(".dashboard-grid"),
+    $("#operations-section"),
+    $("#alerts-section"),
+    $("#project-detail"),
+    $("#requirements-section"),
+    $("#resources-section"),
+  ];
+  orderedSections.forEach(section => main.insertBefore(section, firstDialog));
+}
+
 function programSelectorOptions(selectedId) {
   return state.programs.filter(item => item.status !== "archived").map(item => `<option value="${item.id}" ${item.id === selectedId ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("");
 }
@@ -689,6 +707,7 @@ state.actor = loadStoredActor().trim().slice(0, 100);
 const actorInput = $("#current-actor"); actorInput.value = state.actor; actorInput.oninput = () => { const value = actorInput.value.trimStart().slice(0, 100); state.actor = value.trim(); storeActor(state.actor); }; actorInput.onchange = () => { actorInput.value = state.actor; notify(state.actor ? `当前使用者：${state.actor}` : "已清除使用者名称", true); };
 
 async function init() {
+  arrangeWorkspaceSections();
   try { await Promise.all([loadTemplates(), loadPrograms()]); renderCalendar(); if (state.programs.length) await showProgram(state.programs[0].id); }
   catch (error) { notify(`加载失败：${error.message}`); }
 }
