@@ -546,6 +546,16 @@ def patch_activity(activity_id: str, payload: ActivityUpdate, db: Session = Depe
     return activity
 
 
+@app.delete("/api/v2/activities/{activity_id}", status_code=status.HTTP_204_NO_CONTENT)
+def remove_activity(activity_id: str, db: Session = Depends(get_db)) -> None:
+    activity = db.get(Project, activity_id)
+    if activity is None or activity.program_id is None:
+        raise HTTPException(status_code=404, detail="培养活动不存在")
+    activity.status = "archived"
+    activity.archived_at = datetime.now(UTC)
+    db.commit()
+
+
 @app.get("/api/v2/activities/{activity_id}", response_model=ProjectRead)
 def get_activity(activity_id: str, db: Session = Depends(get_db)) -> Project:
     return get_project(activity_id, db)

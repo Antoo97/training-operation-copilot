@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from app.database import Base
-from app.main import patch_activity, patch_training_class, post_activity, post_cohort, post_training_class, remove_project, remove_training_class
+from app.main import patch_activity, patch_training_class, post_activity, post_cohort, post_training_class, remove_activity, remove_project, remove_training_class
 from app.models import Program, Project, TrainingClass
 from app.schemas import ActivityCreate, ActivityUpdate, CohortCreate, ProgramCreate, ProjectCreate, TrainingClassCreate, TrainingClassUpdate
 from app.services.projects import create_program, create_project
@@ -145,3 +145,10 @@ def test_existing_activity_and_training_class_can_be_maintained() -> None:
         assert updated_class.participant_count == 28
         remove_training_class(training_class.id, db)
         assert db.get(TrainingClass, training_class.id) is None
+        remove_activity(activity.id, db)
+        archived_activity = db.get(Project, activity.id)
+        assert archived_activity is not None
+        assert archived_activity.status == "archived"
+        assert archived_activity.archived_at is not None
+        assert len(archived_activity.milestones) == 20
+        assert len(archived_activity.tasks) == 64
