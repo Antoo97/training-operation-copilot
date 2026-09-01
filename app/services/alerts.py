@@ -74,7 +74,7 @@ def evaluate_candidates(program, today: date, template_rules: list[RiskRule] | N
 def evaluate(db: Session, program_id: str, today: date | None = None) -> list[Alert]:
     program = load_program(db, program_id)
     if not program:
-        raise ValueError("培养项目不存在")
+        raise ValueError("培训项目不存在")
     now, today = datetime.now(UTC), today or date.today()
     candidates = evaluate_candidates(program, today, list(db.scalars(select(RiskRule)).all()))
     active_keys = {(x["rule_code"], x["source_entity_type"], x["source_entity_id"]) for x in candidates}

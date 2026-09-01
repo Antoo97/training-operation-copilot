@@ -23,7 +23,7 @@ def money(value: Decimal | int | None) -> Decimal:
 def require_program(db: Session, program_id: str) -> Program:
     program = db.get(Program, program_id)
     if program is None:
-        raise ValueError("培养项目不存在")
+        raise ValueError("培训项目不存在")
     return program
 
 
@@ -32,7 +32,7 @@ def validate_activity(db: Session, program_id: str, activity_id: str | None) -> 
         return None
     activity = db.get(Project, activity_id)
     if activity is None or activity.program_id != program_id:
-        raise ValueError("培养活动不属于所选培养项目")
+        raise ValueError("培养活动不属于所选培训项目")
     return activity
 
 
@@ -46,7 +46,7 @@ def validate_budget_item_link(db: Session, program_id: str, budget_item_id: str 
         )
     )
     if item is None:
-        raise ValueError("预算项不属于所选培养项目")
+        raise ValueError("预算项不属于所选培训项目")
     return item
 
 
@@ -63,7 +63,7 @@ def create_budget_sheet(db: Session, payload: BudgetSheetCreate) -> BudgetSheet:
             BudgetSheet.activity_id.is_(None),
         ))
         if existing:
-            raise ValueError("该培养项目已经有项目级预算表")
+            raise ValueError("该培训项目已经有项目级预算表")
     sheet = BudgetSheet(id=str(uuid4()), **payload.model_dump())
     db.add(sheet)
     db.commit()

@@ -460,7 +460,7 @@ def patch_cohort(cohort_id: str, payload: CohortUpdate, db: Session = Depends(ge
 def post_training_class(program_id: str, payload: TrainingClassCreate, db: Session = Depends(get_db)) -> TrainingClass:
     program = db.get(Program, program_id)
     if program is None or program.status == "archived":
-        raise HTTPException(status_code=404, detail="培养项目不存在")
+        raise HTTPException(status_code=404, detail="培训项目不存在")
     start_date = payload.start_date or program.start_date
     end_date = payload.end_date or program.end_date
     if end_date < start_date:
@@ -534,7 +534,7 @@ def patch_activity(activity_id: str, payload: ActivityUpdate, db: Session = Depe
     if "cohort_id" in values and values["cohort_id"] is not None:
         cohort = db.get(Cohort, values["cohort_id"])
         if cohort is None or cohort.program_id != activity.program_id:
-            raise HTTPException(status_code=422, detail="届别不属于当前培养项目")
+            raise HTTPException(status_code=422, detail="届别不属于当前培训项目")
     for key, value in values.items():
         if isinstance(value, str):
             value = value.strip() or None
@@ -1198,7 +1198,7 @@ def list_program_dashboards(db: Session = Depends(get_db)) -> list[dict]:
 @app.get("/api/v2/programs/{program_id}/dashboard")
 def get_program_dashboard(program_id: str, db: Session = Depends(get_db)) -> dict:
     result = dashboard(db, program_id)
-    if result is None: raise HTTPException(status_code=404, detail="培养项目不存在")
+    if result is None: raise HTTPException(status_code=404, detail="培训项目不存在")
     return result
 
 
@@ -1217,7 +1217,7 @@ def get_training_map(year: int = Query(default_factory=lambda: date.today().year
     activities = db.scalars(select(Project).options(selectinload(Project.program), selectinload(Project.cohort)).where(Project.start_date <= date(year, 12, 31), func.coalesce(Project.end_date, Project.start_date) >= date(year, 1, 1), Project.status != "archived").order_by(Project.start_date)).all()
     rows=[]
     for item in activities:
-        group = item.program.name if item.program else "未归属培养项目"
+        group = item.program.name if item.program else "未归属培训项目"
         activity_type = item.activity_type or item.type
         # 线下培训的 start_date 可能包含数月准备周期；年度地图按实际培训日呈现。
         map_start = item.event_date if activity_type == "offline_training" and item.event_date else item.start_date
@@ -1266,7 +1266,7 @@ def update_alert_state(alert_id: str, action: str, db: Session = Depends(get_db)
 @app.get("/api/v2/programs/{program_id}/focus")
 def get_program_focus(program_id: str, days: int = Query(7, ge=1, le=30), db: Session = Depends(get_db)) -> list[dict]:
     program = load_program(db, program_id)
-    if not program: raise HTTPException(status_code=404, detail="培养项目不存在")
+    if not program: raise HTTPException(status_code=404, detail="培训项目不存在")
     return focus_items(program, date.today(), days)
 
 
@@ -1387,7 +1387,7 @@ def link_task_resource(task_id: str, payload: dict = Body(...), db: Session = De
 def task_calendar(task_id: str, db: Session = Depends(get_db)) -> Response:
     task = db.scalar(select(ProjectTask).options(selectinload(ProjectTask.project).selectinload(Project.program)).where(ProjectTask.id == task_id))
     if not task: raise HTTPException(status_code=404, detail="任务不存在")
-    content = build_calendar([{"uid": f"task-{task.id}", "start": task.start_date, "end": task.deadline, "summary": task.title, "description": f"培养项目：{task.project.program.name if task.project.program else ''}；活动：{task.project.name}；负责人：{task.owner or '未填写'}；状态：{task.status}"}])
+    content = build_calendar([{"uid": f"task-{task.id}", "start": task.start_date, "end": task.deadline, "summary": task.title, "description": f"培训项目：{task.project.program.name if task.project.program else ''}；活动：{task.project.name}；负责人：{task.owner or '未填写'}；状态：{task.status}"}])
     return Response(content, media_type="text/calendar; charset=utf-8", headers={"Content-Disposition": f'attachment; filename="task-{task.id}.ics"'})
 
 
@@ -1402,13 +1402,13 @@ def milestone_calendar(milestone_id: str, db: Session = Depends(get_db)) -> Resp
 @app.get("/api/v2/programs/{program_id}/calendar.ics")
 def program_calendar(program_id: str, db: Session = Depends(get_db)) -> Response:
     program = load_program(db, program_id)
-    if not program: raise HTTPException(status_code=404, detail="培养项目不存在")
+    if not program: raise HTTPException(status_code=404, detail="培训项目不存在")
     events=[]
     for activity in program.activities:
         for m in activity.milestones:
-            if m.required and m.status == "active": events.append({"uid": f"milestone-{m.id}", "start": m.start_date, "end": m.deadline, "summary": f"{activity.name}｜{m.name}", "description": f"培养项目：{program.name}；关键节点"})
+            if m.required and m.status == "active": events.append({"uid": f"milestone-{m.id}", "start": m.start_date, "end": m.deadline, "summary": f"{activity.name}｜{m.name}", "description": f"培训项目：{program.name}；关键节点"})
         for t in activity.tasks:
-            if t.required and t.status not in {"done", "cancelled"}: events.append({"uid": f"task-{t.id}", "start": t.start_date, "end": t.deadline, "summary": f"{activity.name}｜{t.title}", "description": f"培养项目：{program.name}；负责人：{t.owner or '未填写'}"})
+            if t.required and t.status not in {"done", "cancelled"}: events.append({"uid": f"task-{t.id}", "start": t.start_date, "end": t.deadline, "summary": f"{activity.name}｜{t.title}", "description": f"培训项目：{program.name}；负责人：{t.owner or '未填写'}"})
     return Response(build_calendar(events), media_type="text/calendar; charset=utf-8", headers={"Content-Disposition": f'attachment; filename="program-{program.id}.ics"'})
 
 
@@ -1432,7 +1432,7 @@ def all_programs_calendar(db: Session = Depends(get_db)) -> Response:
 @app.get("/api/v2/programs/{program_id}/exports/operations.xlsx")
 def export_operations(program_id: str, db: Session = Depends(get_db)) -> Response:
     program = load_program(db, program_id)
-    if not program: raise HTTPException(status_code=404, detail="培养项目不存在")
+    if not program: raise HTTPException(status_code=404, detail="培训项目不存在")
     from app.services.export_excel import build_operations_workbook
     content = build_operations_workbook(db, program)
     return Response(content, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", headers={"Content-Disposition": f'attachment; filename="training-copilot-{program.id}.xlsx"'})
@@ -1442,7 +1442,7 @@ def export_operations(program_id: str, db: Session = Depends(get_db)) -> Respons
 def get_retrospective(program_id: str, db: Session = Depends(get_db)) -> dict:
     result = dashboard(db, program_id)
     program = load_program(db, program_id)
-    if not result or not program: raise HTTPException(status_code=404, detail="培养项目不存在")
+    if not result or not program: raise HTTPException(status_code=404, detail="培训项目不存在")
     tasks=[t for a in program.activities for t in a.tasks if t.status != "cancelled"]
     scored=[t.quality_score for t in tasks if t.quality_score is not None]
     return {"program": {"id": program.id, "name": program.name, "start_date": program.start_date, "end_date": program.end_date}, "progress": result["progress"], "health": result["health"], "activity_count": len(program.activities), "participant_count": result["outcomes"]["participant_count"], "task_count": len(tasks), "completed_task_count": sum(t.status == "done" for t in tasks), "overdue_task_count": sum(t.deadline < date.today() and t.status not in {"done", "cancelled"} for t in tasks), "average_quality_score": round(sum(scored)/len(scored), 2) if scored else None, "retrospective_notes": [{"task_id": t.id, "task_title": t.title, "quality_score": t.quality_score, "note": t.retrospective_note} for t in tasks if t.retrospective_note or t.quality_score], "specialty": result["specialty"], "alerts": result["health"]}
