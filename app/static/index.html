@@ -4,20 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>培训项目驾驶舱</title>
-  <link rel="stylesheet" href="/static/styles.css?v=phase5h">
-  <link rel="stylesheet" href="/static/phase2.css?v=phase5h">
+  <link rel="stylesheet" href="/static/styles.css?v=visual1">
+  <link rel="stylesheet" href="/static/phase2.css?v=visual1">
+  <link rel="stylesheet" href="/static/visual-system.css?v=visual1">
+  <link rel="stylesheet" href="/static/notion-theme.css?v=notion1">
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar">
       <div class="brand"><span class="brand-mark">T</span><div><strong>培训运营</strong><small>项目驾驶舱</small></div></div>
       <nav>
-        <button class="nav-item" data-view="training-map"><span>▦</span>年度培训日历</button>
-        <button class="nav-item active" data-view="dashboard"><span>▦</span>项目列表</button>
+        <button class="nav-item" data-view="training-map"><span>◫</span>年度培训日历</button>
+        <button class="nav-item active" data-view="dashboard"><span>▤</span>项目列表</button>
         <button class="nav-item" data-view="create"><span>＋</span>创建培养项目</button>
           <button class="nav-item" data-view="timeline"><span>◷</span>节点任务</button>
-          <button class="nav-item" data-view="requirements"><span>￥</span>需求协同</button>
-          <button class="nav-item" data-view="operations"><span>▤</span>运营总览</button>
+          <button class="nav-item" data-view="requirements"><span>⇄</span>需求协同</button>
+          <button class="nav-item" data-view="operations"><span>◉</span>运营总览</button>
           <button class="nav-item" data-view="alerts"><span>!</span>风险预警</button>
           <button class="nav-item" data-view="resources"><span>↗</span>SOP与资料</button>
       </nav>
@@ -31,6 +33,18 @@
       </header>
 
       <p id="global-message" class="global-message" aria-live="polite"></p>
+
+      <section id="copilot-welcome" class="copilot-welcome" aria-labelledby="copilot-welcome-title">
+        <div class="copilot-intro">
+          <span class="copilot-symbol" aria-hidden="true">✦</span>
+          <div><span class="section-kicker">COPILOT BRIEF</span><h2 id="copilot-welcome-title">今日项目脉搏</h2><p id="copilot-summary-text">正在汇总项目进展与近期重点…</p></div>
+        </div>
+        <dl class="copilot-stats">
+          <div><dt>推进中项目</dt><dd id="copilot-active-count">—</dd></div>
+          <div class="attention"><dt>近期需跟进</dt><dd id="copilot-followup-count">—</dd></div>
+          <div class="risk"><dt>风险建议关注</dt><dd id="copilot-risk-count">—</dd></div>
+        </dl>
+      </section>
 
       <section id="create-section" class="panel create-section" hidden>
           <div class="panel-title"><div><span class="section-kicker">NEW PROGRAM</span><h2>创建培养项目</h2></div><button id="close-create" class="icon-button" aria-label="关闭创建表单">×</button></div>
@@ -86,7 +100,7 @@
       </section>
 
       <section id="alerts-section" class="panel operations-section" hidden>
-        <div class="panel-title"><div><span class="section-kicker">RISK ALERTS</span><h2>风险预警中心</h2><p>全部由确定性规则计算，不使用 LLM 判断项目状态。</p></div><div><button id="evaluate-alerts" class="primary-button">重新评估</button><button id="close-alerts" class="icon-button">×</button></div></div><div id="alerts-list" class="requirement-list"></div>
+        <div class="panel-title"><div><span class="section-kicker">RISK ALERTS</span><h2>风险预警中心</h2></div><div><button id="evaluate-alerts" class="primary-button">重新评估</button><button id="close-alerts" class="icon-button">×</button></div></div><div id="alerts-list" class="requirement-list"></div>
       </section>
 
       <section id="resources-section" class="panel operations-section" hidden>
@@ -137,6 +151,6 @@
       <dialog id="subtask-dialog" class="workspace-dialog"><div class="dialog-header"><div><span class="section-kicker">BRANCH TASKS</span><h2 id="subtask-dialog-title">新增分支任务</h2></div><button type="button" class="icon-button close-dialog" aria-label="关闭">×</button></div><div id="subtask-dialog-list" class="subtask-dialog-list"></div><form id="subtask-dialog-form" class="dialog-form compact-form"><input type="hidden" name="task_id"><label class="full">分支任务名称<input name="title" maxlength="300" required></label><label>开始日期<input name="start_date" type="date" required></label><label>截止日期<input name="deadline" type="date" required></label><label>负责人<input name="owner" maxlength="500"></label><label>进度<input name="progress_percent" type="number" min="0" max="100" value="0"></label><label class="full">备注<textarea name="notes"></textarea></label><div class="dialog-actions full"><button class="primary-button">添加分支任务</button><button type="button" class="text-button close-dialog">取消</button></div></form></dialog>
     </main>
   </div>
-  <script src="/static/app.js?v=phase5h"></script>
+  <script src="/static/app.js?v=visual1"></script>
 </body>
 </html>

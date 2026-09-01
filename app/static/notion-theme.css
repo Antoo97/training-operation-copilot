@@ -1,0 +1,109 @@
+/* Optional Notion-inspired theme layer. Remove this stylesheet link to restore the blue SaaS theme. */
+:root {
+  --bg: #f3f6fb;
+  --panel: #ffffff;
+  --surface-subtle: #f7f9fd;
+  --ink: #1d2942;
+  --ink-soft: #40506d;
+  --muted: #748097;
+  --line: #e2e8f1;
+  --line-strong: #d2dceb;
+  --navy: #1b2b59;
+  --primary: #3159c7;
+  --primary-hover: #2448aa;
+  --primary-soft: #e9effd;
+  --mint: #3159c7;
+  --cyan: #337ea9;
+  --purple: #9065b0;
+  --danger: #c4554d;
+  --danger-soft: #fbe9e7;
+  --success: #448361;
+  --success-soft: #e8f2ec;
+  --warning: #b47728;
+  --warning-soft: #fbefd9;
+  --shadow: 0 1px 2px rgba(15, 15, 15, .04), 0 4px 12px rgba(15, 15, 15, .025);
+  --shadow-hover: 0 2px 4px rgba(15, 15, 15, .05), 0 8px 22px rgba(15, 15, 15, .055);
+  --radius-card: 10px;
+  --radius-control: 6px;
+}
+
+body { background: #f3f6fb; font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+.main-content { padding-top: 36px; }
+.sidebar { background: #f5f7fb; border-right-color: #dfe6f1; }
+.brand-mark { border-radius: 7px; background: #3159c7; box-shadow: 0 5px 14px rgba(49, 89, 199, .18); font-family: Georgia, serif; }
+.brand strong { color: #1d2942; }
+.nav-item { border-radius: 6px; color: #66738a; font-weight: 600; }
+.nav-item span { color: #8d99ad; }
+.nav-item:hover { color: #294fac; background: #edf2fc; transform: none; }
+.nav-item.active { color: #2449a8; background: #e6edfc; box-shadow: none; }
+.nav-item.active::before { position: absolute; left: 0; width: 3px; height: 22px; border-radius: 0 3px 3px 0; background: #3159c7; content: ""; }
+.nav-item.active span { color: #3159c7; }
+.online-dot { background: #448361; box-shadow: none; }
+
+.eyebrow, .section-kicker { color: #5373bd; letter-spacing: .12em; }
+.page-header h1 { color: #18233b; font-weight: 720; letter-spacing: -.04em; }
+.welcome { color: #748097; }
+.panel-title h2, .calendar-head h2, .detail-header h2 { color: #26324a; }
+
+input, select, textarea,
+.dialog-form input, .dialog-form select, .dialog-form textarea,
+.branch-task-row input, .branch-task-row select, .branch-task-row textarea { border-color: #dededb; border-radius: 6px; background: #fff; }
+input:hover, select:hover, textarea:hover { border-color: #c8c8c4; }
+input:focus, select:focus, textarea:focus { border-color: #6482ca; box-shadow: 0 0 0 2px rgba(49, 89, 199, .11); }
+:focus-visible { outline-color: rgba(49, 89, 199, .3); }
+.primary-button { border-color: #3159c7; border-radius: 6px; background: #3159c7; box-shadow: none; }
+.primary-button:hover { border-color: #2448aa; background: #2448aa; transform: none; }
+.outline-button, .text-button, .icon-button { border-color: #dededb; border-radius: 6px; color: #5f5e5b; box-shadow: 0 1px 1px rgba(15, 15, 15, .025); }
+.outline-button:hover, .text-button:hover, .icon-button:hover { border-color: #c8c8c4; color: #37352f; background: #f7f7f5; }
+.count-badge { color: #5f5e5b; background: #eeeeec; }
+
+.copilot-welcome { padding: 22px 24px; border-color: #dce5f4; border-left: 3px solid #3159c7; border-radius: 10px; background: #fff; box-shadow: var(--shadow); }
+.copilot-symbol { width: 40px; height: 40px; flex-basis: 40px; border-radius: 7px; color: #3159c7; background: #e9effd; box-shadow: none; }
+.copilot-intro h2 { color: #26324a; font-size: 18px; }
+.copilot-intro p { color: #748097; }
+.copilot-stats div { border-left-color: #e9e9e7; }
+.copilot-stats dd { color: #3159c7; }
+
+.panel, .metric-card, .alert-group, .center-month-calendar { border-color: #e5e5e2; border-radius: 10px; box-shadow: var(--shadow); }
+.compact-form, .milestone-form, .inline-task-form, .requirement-filters, .calendar-toolbar, .alert-bulk, .requirement-bulk { border-color: #e5e5e2; background: #f7f7f5; }
+.metric-card:hover, .project-card:hover, .task:hover, .entity-chip:hover, .requirement-card:hover, .day-item:hover, .operations-metrics article:hover, .requirement-summary .summary-jump:hover, .publicity-month-card:hover, .calendar-range-list article:hover { transform: translateY(-1px); border-color: #d5d5d2; box-shadow: var(--shadow-hover); }
+
+.metric-card.accent { background: #1b2b59; }
+.metric-card.accent > span, .metric-card.accent small { color: #cfcfcb; }
+.progress-track i { background: #b8e0cb; }
+.metric-icon { border-radius: 7px; }
+.project-card { border-radius: 8px; }
+.project-card:hover { background: #fafaf9; }
+.project-card.active { border-color: #cbd8f2; background: #eaf0fd; box-shadow: inset 3px 0 #3159c7; }
+.health-chip { font-weight: 650; }
+.program-progress::-webkit-progress-value { background: #3159c7; }
+.program-progress::-moz-progress-bar { background: #3159c7; }
+
+.calendar-day:hover { background: #f3f3f1; }
+.calendar-day.selected { background: #eaf0fd; outline-color: #6482ca; }
+.calendar-day.today .day-number { background: #3159c7; }
+.map-cell.head, .center-calendar-weekdays { background: #f3f3f1; }
+.milestone { grid-template-columns: 260px minmax(0, 1fr); }
+.milestone-range { display: flex; grid-template-columns: none; align-items: center; gap: 8px; white-space: nowrap; }
+.milestone-range span { display: inline-flex; align-items: baseline; gap: 4px; }
+.milestone-range strong { margin: 0; font-size: 11px; }
+.task, .entity-chip, .requirement-card, .day-item { border-radius: 8px; }
+.task-main input, .task-select { accent-color: #3159c7; }
+.status-pill, .subtask-weight, .branch-task-heading span { color: #5f5e5b; background: #eeeeec; }
+.task.done .status-pill { color: #3b7656; background: #e8f2ec; }
+.focus-date-card { border-left-color: #787774; background: #f7f7f5; }
+.focus-date-card li::before { background: #787774; }
+.price-disclaimer, .dialog-hint { border-left-color: #9065b0; color: #694b7c; background: #f3ecf7; }
+.log-item { border-left-color: #787774; background: #f7f7f5; }
+
+.workspace-dialog { border-radius: 10px; box-shadow: 0 18px 60px rgba(15, 15, 15, .2); }
+.workspace-dialog::backdrop { background: rgba(35, 35, 35, .45); }
+.dialog-header { background: #fff; }
+.subtask-dialog-list { background: #f7f7f5; }
+.branch-task-row { border-radius: 8px; }
+
+@media (max-width: 760px) {
+  .sidebar { background: #f5f7fb; }
+  .copilot-welcome { padding: 18px; }
+  .milestone { grid-template-columns: 1fr; }
+}
